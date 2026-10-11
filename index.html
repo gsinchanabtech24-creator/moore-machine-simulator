@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Moore Machine Simulator</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ================= HEADER ================= -->
+
+    <header class="header">
+
+        <div class="brand">
+
+            <div class="logo">δ</div>
+
+            <div>
+                <h3>Automata Lab</h3>
+                <p>Interactive learning module</p>
+            </div>
+
+        </div>
+
+        <div class="topic">
+            THEORY OF COMPUTATION
+        </div>
+
+    </header>
+
+
+    <!-- ================= HERO ================= -->
+
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <div class="module">
+                FINITE STATE MACHINES · MODULE 04
+            </div>
+
+            <h1>
+                Simulation of
+                <span>Moore Machine</span>
+            </h1>
+
+            <p>
+                Trace transitions, inspect state-bound outputs,
+                and build an intuition for how Moore machines
+                process binary strings.
+            </p>
+
+        </div>
+
+
+        <div class="principle">
+
+            <small>CORE PRINCIPLE</small>
+
+            <h3>OUTPUT DEPENDS ONLY ON</h3>
+
+            <div class="flow">
+
+                <div class="flow-box">
+                    Current state
+                </div>
+
+                <span>→</span>
+
+                <div class="flow-box purple">
+                    Output
+                </div>
+
+            </div>
+
+            <p>Never directly on the input symbol.</p>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="container">
+
+
+        <!-- CONFIGURE + STATE DIAGRAM -->
+
+        <section class="top-grid">
+
+
+            <!-- CONFIGURATION -->
+
+            <div class="card configure">
+
+                <div class="section-label">
+                    01 · CONFIGURE
+                </div>
+
+                <div class="title-row">
+
+                    <h2>Input String</h2>
+
+                    <span>
+                        Binary alphabet Σ = {0, 1}
+                    </span>
+
+                </div>
+
+                <label>
+                    String to process
+                </label>
+
+
+                <div class="input-wrapper">
+
+                    <div class="sigma">Σ</div>
+
+                    <input
+                        type="text"
+                        id="inputString"
+                        placeholder="Enter input e.g. 101101"
+                        maxlength="50"
+                    >
+
+                </div>
+
+
+                <button
+                    class="primary-btn"
+                    id="startBtn"
+                >
+                    ▶ &nbsp; Start Simulation
+                </button>
+
+
+                <div class="button-row">
+
+                    <button
+                        class="secondary-btn"
+                        id="nextBtn"
+                    >
+                        Next Step &nbsp; →
+                    </button>
+
+                    <button
+                        class="secondary-btn"
+                        id="runBtn"
+                    >
+                        Run All &nbsp; »
+                    </button>
+
+                </div>
+
+
+                <button
+                    class="reset-btn"
+                    id="resetBtn"
+                >
+                    Reset simulation
+                </button>
+
+
+                <div
+                    class="error"
+                    id="errorMessage"
+                ></div>
+
+            </div>
+
+
+            <!-- STATE DIAGRAM -->
+
+            <div class="card diagram-card">
+
+                <div class="section-label">
+                    02 · OBSERVE
+                </div>
+
+                <div class="title-row">
+
+                    <h2>State Diagram</h2>
+
+                    <span>
+                        Each state displays its Moore output λ(q)
+                    </span>
+
+                </div>
+
+
+                <div class="diagram">
+
+                    <svg
+                        viewBox="0 0 900 430"
+                        class="state-svg"
+                    >
+
+                        <!-- GRID -->
+
+                        <defs>
+
+                            <pattern
+                                id="grid"
+                                width="32"
+                                height="32"
+                                patternUnits="userSpaceOnUse"
+                            >
+
+                                <path
+                                    d="M 32 0 L 0 0 0 32"
+                                    fill="none"
+                                    stroke="#e5e9fa"
+                                    stroke-width="1"
+                                />
+
+                            </pattern>
+
+                            <marker
+                                id="arrow"
+                                markerWidth="10"
+                                markerHeight="10"
+                                refX="8"
+                                refY="3"
+                                orient="auto"
+                            >
+
+                                <path
+                                    d="M0,0 L0,6 L9,3 z"
+                                    fill="#3949d8"
+                                />
+
+                            </marker>
+
+                            <marker
+                                id="arrowPurple"
+                                markerWidth="10"
+                                markerHeight="10"
+                                refX="8"
+                                refY="3"
+                                orient="auto"
+                            >
+
+                                <path
+                                    d="M0,0 L0,6 L9,3 z"
+                                    fill="#7c3aed"
+                                />
+
+                            </marker>
+
+                        </defs>
+
+
+                        <rect
+                            width="900"
+                            height="430"
+                            fill="url(#grid)"
+                        />
+
+
+                        <!-- START ARROW -->
+
+                        <text
+                            x="30"
+                            y="215"
+                            class="diagram-label"
+                        >
+                            start
+                        </text>
+
+                        <line
+                            x1="55"
+                            y1="225"
+                            x2="135"
+                            y2="225"
+                            stroke="#8791a8"
+                            stroke-width="3"
+                            stroke-dasharray="8 6"
+                            marker-end="url(#arrow)"
+                        />
+
+
+                        <!-- q0 SELF LOOP -->
+
+                        <path
+                            d="M170 180
+                               C125 100, 245 100, 200 180"
+                            fill="none"
+                            stroke="#3949d8"
+                            stroke-width="4"
+                            marker-end="url(#arrow)"
+                        />
+
+                        <text
+                            x="180"
+                            y="100"
+                            class="transition-label"
+                        >
+                            0
+                        </text>
+
+
+                        <!-- q0 → q1 -->
+
+                        <path
+                            d="M225 210
+                               C315 125, 390 125, 470 210"
+                            fill="none"
+                            stroke="#3949d8"
+                            stroke-width="4"
+                            marker-end="url(#arrow)"
+                        />
+
+                        <text
+                            x="350"
+                            y="130"
+                            class="transition-label"
+                        >
+                            1
+                        </text>
+
+
+                        <!-- q1 → q0 -->
+
+                        <path
+                            d="M470 250
+                               C390 340, 315 340, 225 250"
+                            fill="none"
+                            stroke="#7c3aed"
+                            stroke-width="4"
+                            marker-end="url(#arrowPurple)"
+                        />
+
+                        <text
+                            x="350"
+                            y="350"
+                            class="transition-label purple-text"
+                        >
+                            0
+                        </text>
+
+
+                        <!-- q1 → q2 -->
+
+                        <path
+                            d="M535 210
+                               C620 125, 700 125, 775 210"
+                            fill="none"
+                            stroke="#3949d8"
+                            stroke-width="4"
+                            marker-end="url(#arrow)"
+                        />
+
+                        <text
+                            x="655"
+                            y="130"
+                            class="transition-label"
+                        >
+                            1
+                        </text>
+
+
+                        <!-- q2 SELF LOOP -->
+
+                        <path
+                            d="M800 180
+                               C755 100, 875 100, 830 180"
+                            fill="none"
+                            stroke="#3949d8"
+                            stroke-width="4"
+                            marker-end="url(#arrow)"
+                        />
+
+                        <text
+                            x="810"
+                            y="100"
+                            class="transition-label"
+                        >
+                            1
+                        </text>
+
+
+                        <!-- q2 → q0 -->
+
+                        <path
+                            d="M775 275
+                               C650 400, 350 410, 225 275"
+                            fill="none"
+                            stroke="#7c3aed"
+                            stroke-width="4"
+                            marker-end="url(#arrowPurple)"
+                        />
+
+                        <text
+                            x="500"
+                            y="405"
+                            class="transition-label purple-text"
+                        >
+                            0
+                        </text>
+
+
+                        <!-- Q0 -->
+
+                        <g id="q0Node">
+
+                            <circle
+                                cx="190"
+                                cy="225"
+                                r="62"
+                                class="state-circle active"
+                            />
+
+                            <text
+                                x="190"
+                                y="218"
+                                text-anchor="middle"
+                                class="state-name"
+                            >
+                                q0
+                            </text>
+
+                            <line
+                                x1="160"
+                                y1="235"
+                                x2="220"
+                                y2="235"
+                                class="state-line"
+                            />
+
+                            <text
+                                x="190"
+                                y="255"
+                                text-anchor="middle"
+                                class="output-text"
+                            >
+                                λ = 0
+                            </text>
+
+                        </g>
+
+
+                        <!-- Q1 -->
+
+                        <g id="q1Node">
+
+                            <circle
+                                cx="500"
+                                cy="225"
+                                r="62"
+                                class="state-circle"
+                            />
+
+                            <text
+                                x="500"
+                                y="218"
+                                text-anchor="middle"
+                                class="state-name"
+                            >
+                                q1
+                            </text>
+
+                            <line
+                                x1="470"
+                                y1="235"
+                                x2="530"
+                                y2="235"
+                                class="state-line"
+                            />
+
+                            <text
+                                x="500"
+                                y="255"
+                                text-anchor="middle"
+                                class="output-text"
+                            >
+                                λ = 0
+                            </text>
+
+                        </g>
+
+
+                        <!-- Q2 -->
+
+                        <g id="q2Node">
+
+                            <circle
+                                cx="810"
+                                cy="225"
+                                r="62"
+                                class="state-circle"
+                            />
+
+                            <text
+                                x="810"
+                                y="218"
+                                text-anchor="middle"
+                                class="state-name"
+                            >
+                                q2
+                            </text>
+
+                            <line
+                                x1="780"
+                                y1="235"
+                                x2="840"
+                                y2="235"
+                                class="state-line"
+                            />
+
+                            <text
+                                x="810"
+                                y="255"
+                                text-anchor="middle"
+                                class="output-text"
+                            >
+                                λ = 1
+                            </text>
+
+                        </g>
+
+                    </svg>
+
+
+                    <div class="legend">
+
+                        <span>
+                            <i class="dot"></i>
+                            Current state
+                        </span>
+
+                        <span>
+                            <i class="line blue"></i>
+                            Input 1
+                        </span>
+
+                        <span>
+                            <i class="line purple"></i>
+                            Input 0
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- STATUS + LATEST TRANSITION -->
+
+        <section class="status-grid">
+
+
+            <div class="card">
+
+                <div class="section-label">
+                    LIVE
+                </div>
+
+                <h2>Simulation Status</h2>
+
+
+                <div class="status-badge">
+
+                    <span class="status-dot"></span>
+
+                    <span id="statusText">
+                        Ready
+                    </span>
+
+                </div>
+
+
+                <div class="status-info">
+
+                    <div>
+
+                        <small>Current state</small>
+
+                        <strong id="currentState">
+                            q0
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <small>Current input</small>
+
+                        <strong id="currentInput">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <small>Current output</small>
+
+                        <strong id="currentOutput">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <small>Step count</small>
+
+                        <strong>
+
+                            <span id="stepCount">
+                                0
+                            </span>
+
+                            /
+                            <span id="totalSteps">
+                                0
+                            </span>
+
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="card">
+
+                <div class="section-label">
+                    LATEST TRANSITION
+                </div>
+
+                <h2 id="latestTitle">
+                    Awaiting first step
+                </h2>
+
+
+                <div
+                    class="latest-box"
+                    id="latestMessage"
+                >
+                    Start the simulation, then advance one
+                    symbol at a time to inspect δ and λ.
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- TRANSITION TABLE + RESULT -->
+
+        <section class="result-grid">
+
+
+            <!-- TRANSITION TABLE -->
+
+            <div class="card">
+
+                <div class="section-label">
+                    MACHINE DEFINITION
+                </div>
+
+                <div class="title-row">
+
+                    <h2>Transition Table</h2>
+
+                    <span>
+                        δ(q, a) → next state
+                    </span>
+
+                </div>
+
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                CURRENT STATE
+                            </th>
+
+                            <th>
+                                INPUT 0
+                            </th>
+
+                            <th>
+                                INPUT 1
+                            </th>
+
+                            <th>
+                                OUTPUT λ(q)
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        <tr
+                            id="row-q0"
+                            class="selected-row"
+                        >
+
+                            <td>q0</td>
+
+                            <td>q0</td>
+
+                            <td>q1</td>
+
+                            <td>
+                                <span class="output-badge">
+                                    0
+                                </span>
+                            </td>
+
+                        </tr>
+
+
+                        <tr id="row-q1">
+
+                            <td>q1</td>
+
+                            <td>q0</td>
+
+                            <td>q2</td>
+
+                            <td>
+                                <span class="output-badge light">
+                                    0
+                                </span>
+                            </td>
+
+                        </tr>
+
+
+                        <tr id="row-q2">
+
+                            <td>q2</td>
+
+                            <td>q0</td>
+
+                            <td>q2</td>
+
+                            <td>
+                                <span class="output-badge light">
+                                    1
+                                </span>
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+
+                <div class="functions">
+
+                    <div>
+
+                        <small>
+                            Transition function
+                        </small>
+
+                        <code>
+                            δ(q, a) → q'
+                        </code>
+
+                    </div>
+
+
+                    <div>
+
+                        <small>
+                            Output function
+                        </small>
+
+                        <code>
+                            λ(q) → output
+                        </code>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- OUTPUT -->
+
+            <div class="card">
+
+                <div class="section-label">
+                    RESULT
+                </div>
+
+                <div class="title-row">
+
+                    <h2>Output Sequence</h2>
+
+                    <span>
+                        Updates after each step
+                    </span>
+
+                </div>
+
+
+                <div class="result-row">
+
+                    <span>INPUT</span>
+
+                    <strong id="resultInput">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="result-row">
+
+                    <span>STATE SEQUENCE</span>
+
+                    <strong id="stateSequence">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="output-result">
+
+                    <span>
+                        OUTPUT SEQUENCE
+                    </span>
+
+                    <strong id="outputSequence">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <b>ⓘ &nbsp; Remember the initial output.</b>
+
+                    <p>
+                        Moore machines produce an output for
+                        the initial state before processing the
+                        first input.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- TRANSITION HISTORY -->
+
+        <section class="card history-card">
+
+            <div class="section-label">
+                EXECUTION TRACE
+            </div>
+
+            <div class="title-row">
+
+                <h2>Transition History</h2>
+
+                <span id="transitionCount">
+                    0 transitions recorded
+                </span>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>STEP</th>
+
+                            <th>CURRENT STATE</th>
+
+                            <th>INPUT</th>
+
+                            <th>NEXT STATE</th>
+
+                            <th>OUTPUT</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="historyBody">
+
+                        <tr>
+
+                            <td
+                                colspan="5"
+                                class="empty"
+                            >
+                                No transitions yet.
+                                Your execution trace will
+                                appear here.
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+    <footer>
+
+        Automata Lab · Moore Machine Simulator ·
+        Theory of Computation
+
+    </footer>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
